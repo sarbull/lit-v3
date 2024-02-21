@@ -3,9 +3,11 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
+import '@webcomponents/scoped-custom-element-registry';
 import {LitElement, html, css} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import { ScopedElementsMixin } from '@open-wc/scoped-elements/lit-element.js';
+import { AnotherElement } from './another-element';
 
 /**
  * An example element.
@@ -15,7 +17,11 @@ import {customElement, property} from 'lit/decorators.js';
  * @csspart button - The button
  */
 @customElement('my-element')
-export class MyElement extends LitElement {
+export class MyElement extends ScopedElementsMixin(LitElement) {
+  static scopedElements = {
+    'another-element': AnotherElement,
+  };
+
   static override styles = css`
     :host {
       display: block;
@@ -40,10 +46,14 @@ export class MyElement extends LitElement {
   override render() {
     return html`
       <h1>${this.sayHello(this.name)}!</h1>
+
       <button @click=${this._onClick} part="button">
         Click Count: ${this.count}
       </button>
+
       <slot></slot>
+
+      <another-element></another-element>
     `;
   }
 
